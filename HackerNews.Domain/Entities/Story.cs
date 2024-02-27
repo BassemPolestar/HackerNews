@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using HackerNews.Domain.Enum;
 
-namespace HackerNews.Domain;
+namespace HackerNews.Domain.Entities;
 
 public class Story
 {
@@ -20,7 +21,8 @@ public class Story
     public int Time { get; set; }
     
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public StoryType Type { get; set; }
     
     [JsonPropertyName("url")]
     public string Url { get; set; }

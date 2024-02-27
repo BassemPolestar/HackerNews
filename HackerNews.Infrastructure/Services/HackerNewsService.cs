@@ -1,5 +1,6 @@
 using System.Text.Json;
 using HackerNews.Domain;
+using HackerNews.Domain.Entities;
 
 namespace HackerNews.Infrastructure.Services;
 

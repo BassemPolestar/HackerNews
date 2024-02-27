@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using HackerNews.Domain;
+using HackerNews.Domain.Entities;
 using HackerNews.Infrastructure.Services;
 
 namespace HackerNews.API.Controllers;
