@@ -42,7 +42,7 @@ You can run the application using the following steps:
     dotnet run --project HackerNewsAPI
    ```
 
-This will start the application on http://localhost:5000 by default.
+This will start the application on http://localhost:5055 by default.
 
 ## Running Unit Tests
 
@@ -51,19 +51,37 @@ Unit tests are available to ensure the correctness of the service. You can run t
 dotnet test
 ```
 
+## Cashing layer
+The caching layer in the HackerNews API plays a crucial role in improving performance and reducing load on the Hacker News API server by storing frequently accessed data in memory. This README provides an overview of how caching is implemented in the HackerNews API.
+
+### How Caching Works
+For this example i unitized MemoryCache for simplicity , in a production example this can be replaced by something like memcached, redis or any other service that can provide better distributed cash 
+
+#### MemoryCacheService
+The caching layer utilizes the MemoryCacheService, which is responsible for storing and retrieving cached data in memory. This service is integrated into the HackerNews API to cache responses from the Hacker News API server.
+
+#### Caching Strategy
+When a request is made to fetch the best stories from the Hacker News API, the caching layer first checks if the requested data is available in the cache.
+If the data is found in the cache and is still valid (not expired), it is returned directly from the cache.
+If the data is not found in the cache or has expired, the caching layer fetches the data from the Hacker News API server, stores it in the cache for future use, and returns it to the caller.
+
+#### Cache Expiration
+To ensure that cached data remains up-to-date, each cached item is associated with a time-to-live (TTL) value. When fetching data from the Hacker News API server, the caching layer sets an appropriate expiration time based on the TTL configured for the cache.
+
+
 ## API Usage
 Once the application is running, you can access the API to retrieve the best n stories from Hacker News.
 
 ## Get Best Stories
 To retrieve the best n stories, make a GET request to the following endpoint:
 ```bash
-GET http://localhost:5000/hackernews/best/{n}
+GET http://localhost:5055/hackernews/best/{n}
 ```
 Replace {n} with the number of stories you want to retrieve.
 
 Example:
 ```bash
-GET http://localhost:5000/hackernews/best/5
+GET http://localhost:5055/hackernews/best/5
 ```
 
 This will return an array of the best 5 stories in descending order of score.

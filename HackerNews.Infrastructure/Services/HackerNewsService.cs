@@ -2,6 +2,7 @@ using System.Text.Json;
 using HackerNews.Domain;
 using HackerNews.Domain.Entities;
 using HackerNews.Infrastructure.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace HackerNews.Infrastructure.Services;
 
@@ -9,11 +10,13 @@ public class HackerNewsService : IHackerNewsService
 {
     private readonly HttpClient _httpClient;
     private readonly ICacheService _cacheService;
+    private readonly string _baseUrl;
 
-    public HackerNewsService(HttpClient httpClient, ICacheService cacheService)
+    public HackerNewsService(HttpClient httpClient, ICacheService cacheService, IConfiguration configuration)
     {
         _httpClient = httpClient;
         _cacheService = cacheService;
+        _baseUrl = configuration["HackerNewsApi:BaseUrl"];
     }
 
     public async Task<IEnumerable<Story>> GetBestStoriesAsync(int n)
@@ -37,7 +40,7 @@ public class HackerNewsService : IHackerNewsService
 
     private async Task<IEnumerable<int>?> GetBestStoryIdsAsync()
     {
-        var response = await _httpClient.GetAsync("https://hacker-news.firebaseio.com/v0/beststories.json");
+        var response = await _httpClient.GetAsync($"{_baseUrl}beststories.json");
         if (!response.IsSuccessStatusCode)
             return default;
         
@@ -47,7 +50,7 @@ public class HackerNewsService : IHackerNewsService
 
     private async Task<Story?> GetStoryAsync(int storyId)
     {
-        var response = await _httpClient.GetAsync($"https://hacker-news.firebaseio.com/v0/item/{storyId}.json");
+        var response = await _httpClient.GetAsync($"{_baseUrl}item/{storyId}.json");
         if (!response.IsSuccessStatusCode)
             return default;
         
