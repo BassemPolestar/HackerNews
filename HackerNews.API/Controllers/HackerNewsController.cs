@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
-using HackerNews.Domain;
 using HackerNews.Domain.Entities;
-using HackerNews.Infrastructure.Services;
+using HackerNews.Infrastructure.Interfaces;
 
 namespace HackerNews.API.Controllers;
 
 public class HackerNewsController: ControllerBase
 {
-    private readonly HackerNewsService _hackerNewsService;
+    private readonly IHackerNewsService _hackerNewsService;
 
-    public HackerNewsController(HackerNewsService hackerNewsService)
+    public HackerNewsController(IHackerNewsService hackerNewsService)
     {
         _hackerNewsService = hackerNewsService;
     }
@@ -17,10 +16,7 @@ public class HackerNewsController: ControllerBase
     [HttpGet("best/{n}")]
     public async Task<ActionResult<IEnumerable<Story>>> GetBestStories(int n)
     {
-        var bestStoryIds = await _hackerNewsService.GetBestStoryIdsAsync();
-        var tasks = bestStoryIds.Take(n).Select(id => _hackerNewsService.GetStoryAsync(id));
-        var stories = await Task.WhenAll(tasks);
-        var sortedStories = stories.OrderByDescending(s => s.Score);
-        return Ok(sortedStories);
+        var bestStories = await _hackerNewsService.GetBestStoriesAsync(n);
+        return Ok(bestStories);
     }
 }
