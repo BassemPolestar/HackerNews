@@ -1,14 +1,15 @@
 using System.Text.Json.Serialization;
+using HackerNews.Application.Services;
+using HackerNews.Infrastructure.Clients;
 using HackerNews.Infrastructure.Interfaces;
-using HackerNews.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddMemoryCache();
-builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
-builder.Services.AddHttpClient<IHackerNewsService, HackerNewsService>();
-
+builder.Services.AddSingleton<ICacheClient, MemoryCacheClient>();
+builder.Services.AddHttpClient<IHackerNewsClient, HackerNewsClient>();
+builder.Services.AddSingleton<IHackerNewsService, HackerNewsService>();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

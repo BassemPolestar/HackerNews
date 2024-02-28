@@ -1,27 +1,26 @@
 using System.Text.Json;
-using HackerNews.Domain;
 using HackerNews.Domain.Entities;
 using HackerNews.Infrastructure.Interfaces;
 using Microsoft.Extensions.Configuration;
 
-namespace HackerNews.Infrastructure.Services;
+namespace HackerNews.Infrastructure.Clients;
 
-public class HackerNewsService : IHackerNewsService
+public class HackerNewsClient : IHackerNewsClient
 {
     private readonly HttpClient _httpClient;
-    private readonly ICacheService _cacheService;
+    private readonly ICacheClient _cacheClient;
     private readonly string _baseUrl;
 
-    public HackerNewsService(HttpClient httpClient, ICacheService cacheService, IConfiguration configuration)
+    public HackerNewsClient(HttpClient httpClient, ICacheClient cacheClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
-        _cacheService = cacheService;
+        _cacheClient = cacheClient;
         _baseUrl = configuration["HackerNewsApi:BaseUrl"];
     }
 
     public async Task<IEnumerable<Story>> GetBestStoriesAsync(int n)
     {
-        return await _cacheService.GetOrCreateAsync<IEnumerable<Story>>(
+        return await _cacheClient.GetOrCreateAsync<IEnumerable<Story>>(
             $"BestStories_{n}",
             async () =>
             {

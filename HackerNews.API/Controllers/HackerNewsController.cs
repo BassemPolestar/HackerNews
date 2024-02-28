@@ -1,6 +1,6 @@
+using HackerNews.Application.Models;
+using HackerNews.Application.Services;
 using Microsoft.AspNetCore.Mvc;
-using HackerNews.Domain.Entities;
-using HackerNews.Infrastructure.Interfaces;
 
 namespace HackerNews.API.Controllers;
 
@@ -14,7 +14,7 @@ public class HackerNewsController: ControllerBase
     }
 
     [HttpGet("best/{n}")]
-    public async Task<ActionResult<IEnumerable<Story>>> GetBestStories(int n)
+    public async Task<ActionResult<IEnumerable<StoryModel>>> GetBestStories(int n)
     {
         var bestStories = await _hackerNewsService.GetBestStoriesAsync(n);
         return Ok(bestStories);

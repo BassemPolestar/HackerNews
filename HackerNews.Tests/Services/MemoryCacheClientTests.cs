@@ -1,4 +1,4 @@
-using HackerNews.Infrastructure.Services;
+using HackerNews.Infrastructure.Clients;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
@@ -6,16 +6,16 @@ using NUnit.Framework;
 namespace HackerNews.Tests.Services;
 
 [TestFixture]
-public class MemoryCacheServiceTests
+public class MemoryCacheClientTests
 {
-    private MemoryCacheService _memoryCacheService;
+    private MemoryCacheClient _memoryCacheClient;
     private IMemoryCache _memoryCache;
 
     [SetUp]
     public void Setup()
     {
         _memoryCache = new MemoryCache(new MemoryCacheOptions());
-        _memoryCacheService = new MemoryCacheService(_memoryCache);
+        _memoryCacheClient = new MemoryCacheClient(_memoryCache);
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class MemoryCacheServiceTests
         _memoryCache.Set(key, expectedItem, TimeSpan.FromMinutes(1));
 
         // Act
-        var result = await _memoryCacheService.GetOrCreateAsync(
+        var result = await _memoryCacheClient.GetOrCreateAsync(
             key,
             () => Task.FromResult("shouldNotBeCalled"),
             TimeSpan.FromSeconds(10)); // This should not be called
@@ -44,7 +44,7 @@ public class MemoryCacheServiceTests
         var expectedItem = "createdItem";
 
         // Act
-        var result = await _memoryCacheService.GetOrCreateAsync(
+        var result = await _memoryCacheClient.GetOrCreateAsync(
             key,
             () => Task.FromResult(expectedItem),
             TimeSpan.FromSeconds(10));
@@ -62,7 +62,7 @@ public class MemoryCacheServiceTests
         _memoryCache.Set(key, expectedItem, TimeSpan.FromTicks(1)); // Set cache expiration to 1 tick
 
         // Act
-        var result = await _memoryCacheService.GetOrCreateAsync(
+        var result = await _memoryCacheClient.GetOrCreateAsync(
             key,
             () => Task.FromResult(expectedItem),
             TimeSpan.FromMilliseconds(10)); // Give some time for cache to expire

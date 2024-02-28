@@ -1,5 +1,5 @@
 using System.Net;
-using HackerNews.Infrastructure.Services;
+using HackerNews.Infrastructure.Clients;
 using HackerNews.Tests.Helpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -9,10 +9,10 @@ using NUnit.Framework;
 namespace HackerNews.Tests.Services;
 
 [TestFixture]
-public class HackerNewsServiceTests
+public class HackerNewsClientTests
 {
     private HttpClient _httpClient;
-    private HackerNewsService _hackerNewsService;
+    private HackerNewsClient _hackerNewsClient;
     private Mock<IConfiguration> _configurationMock;
 
     [SetUp]
@@ -47,15 +47,15 @@ public class HackerNewsServiceTests
         _configurationMock = new Mock<IConfiguration>();
         _configurationMock.SetupGet(x => x["HackerNewsApi:BaseUrl"]).Returns("https://hacker-news.firebaseio.com/v0/");
         
-        _hackerNewsService =
-            new HackerNewsService(_httpClient, new MemoryCacheService(new MemoryCache(new MemoryCacheOptions())), _configurationMock.Object);
+        _hackerNewsClient =
+            new HackerNewsClient(_httpClient, new MemoryCacheClient(new MemoryCache(new MemoryCacheOptions())), _configurationMock.Object);
     }
 
     [Test]
     public async Task GetBestStoriesAsync_WithValidResponse_ReturnsBestStories()
     {
         // Act
-        var stories = await _hackerNewsService.GetBestStoriesAsync(1);
+        var stories = await _hackerNewsClient.GetBestStoriesAsync(1);
 
         // Assert
         Assert.IsNotNull(stories);
@@ -70,11 +70,11 @@ public class HackerNewsServiceTests
         // Arrange
         _httpClient = new HttpClient(new FakeHttpMessageHandler(request => Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound))));
         
-        _hackerNewsService =
-            new HackerNewsService(_httpClient, new MemoryCacheService(new MemoryCache(new MemoryCacheOptions())), _configurationMock.Object);
+        _hackerNewsClient =
+            new HackerNewsClient(_httpClient, new MemoryCacheClient(new MemoryCache(new MemoryCacheOptions())), _configurationMock.Object);
 
         // Act
-        var stories = await _hackerNewsService.GetBestStoriesAsync(1);
+        var stories = await _hackerNewsClient.GetBestStoriesAsync(1);
 
         // Assert
         Assert.IsNotNull(stories);
@@ -87,11 +87,11 @@ public class HackerNewsServiceTests
         // Arrange
         _httpClient = new HttpClient(new FakeHttpMessageHandler(request => throw new HttpRequestException("Request failed")));
         
-        _hackerNewsService =
-            new HackerNewsService(_httpClient, new MemoryCacheService(new MemoryCache(new MemoryCacheOptions())), _configurationMock.Object);
+        _hackerNewsClient =
+            new HackerNewsClient(_httpClient, new MemoryCacheClient(new MemoryCache(new MemoryCacheOptions())), _configurationMock.Object);
 
         // Act
-        var exception = Assert.ThrowsAsync<HttpRequestException>(() => _hackerNewsService.GetBestStoriesAsync(1));
+        var exception = Assert.ThrowsAsync<HttpRequestException>(() => _hackerNewsClient.GetBestStoriesAsync(1));
         
         
         // Assert

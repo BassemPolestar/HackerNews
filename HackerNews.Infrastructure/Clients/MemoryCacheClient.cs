@@ -1,13 +1,13 @@
 using HackerNews.Infrastructure.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace HackerNews.Infrastructure.Services;
+namespace HackerNews.Infrastructure.Clients;
 
-public class MemoryCacheService : ICacheService
+public class MemoryCacheClient : ICacheClient
 {
     private readonly IMemoryCache _memoryCache;
 
-    public MemoryCacheService(IMemoryCache memoryCache)
+    public MemoryCacheClient(IMemoryCache memoryCache)
     {
         _memoryCache = memoryCache;
     }

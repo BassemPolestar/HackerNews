@@ -35,14 +35,21 @@ You can run the application using the following steps:
     ```bash
     cd HackerNewsAPI
    ```
-   
-2. Run the application:
+
+2. Build the application:
 
     ```bash
-    dotnet run --project HackerNewsAPI
+    dotnet build
+   ```
+      
+3. Run the application:
+
+    ```bash
+    dotnet run
    ```
 
 This will start the application on http://localhost:5055 by default.
+swagger is added to make it easy to test the api, you can access swagger on http://localhost:5055/swagger/index.html
 
 ## Running Unit Tests
 
