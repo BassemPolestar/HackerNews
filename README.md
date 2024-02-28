@@ -64,8 +64,8 @@ The caching layer in the HackerNews API plays a crucial role in improving perfor
 ### How Caching Works
 For this example i unitized MemoryCache for simplicity , in a production example this can be replaced by something like memcached, redis or any other service that can provide better distributed cash 
 
-#### MemoryCacheService
-The caching layer utilizes the MemoryCacheService, which is responsible for storing and retrieving cached data in memory. This service is integrated into the HackerNews API to cache responses from the Hacker News API server.
+#### MemoryCacheClient
+The caching layer utilizes the MemoryCacheClient, which is responsible for storing and retrieving cached data in memory. This Client is integrated into the HackerNews API to cache responses from the Hacker News API server.
 
 #### Caching Strategy
 When a request is made to fetch the best stories from the Hacker News API, the caching layer first checks if the requested data is available in the cache.
